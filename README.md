@@ -44,10 +44,6 @@ $ cp .env.example .env
 # https://www.digitalocean.com/community/tutorials/openssl-essentials-working-with-ssl-certificates-private-keys-and-csrs
 $ docker run -it --rm -v "./secrets/:/secrets/" alpine/openssl:latest req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /secrets/docker.test.key -out /secrets/docker.test.crt -subj "/C=HU/ST=Pest/L=Budapest/O=Docker Compose Company/CN=docker.test"
 
-# Generate certificates for production (UNTESTED) (run this before `./bin/compose.sh up`)
-$ docker compose run --rm certbot certonly --webroot --webroot-path /var/www/certbot/ -d docker.test --agree-tos -m admin@domain.com
-$ docker compose run --rm certbot show_account --webroot --webroot-path /var/www/certbot/
-
 # Start docker-compose
 $ ./bin/compose.sh up
 

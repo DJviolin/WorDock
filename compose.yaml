@@ -27,20 +27,6 @@ volumes:
 
 services:
 
-### Let's Encrypt ##############################################################
-# https://mindsers.blog/en/post/https-using-nginx-certbot-docker/
-# https://hub.docker.com/r/certbot/certbot
-# https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker
-# https://hub.docker.com/r/nginxproxy/acme-companion
-  # certbot:
-  #   image: certbot/certbot:latest
-  #   restart: ${RESTART_POLICY}
-  #   volumes:
-  #     - certbot_conf:/etc/letsencrypt/:rw
-  #     - certbot_www:/var/www/certbot:rw
-  #   networks:
-  #     - backend
-
 ### MariaDB ####################################################################
 # https://hub.docker.com/_/mariadb
 # https://mariadb.com/kb/en/container-backup-and-restoration/
