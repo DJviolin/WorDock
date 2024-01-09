@@ -1,0 +1,189 @@
+version: '3.8'
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+# https://docs.docker.com/engine/swarm/secrets/
+# https://docs.docker.com/compose/use-secrets/
+# https://docs.docker.com/compose/compose-file/09-secrets/
+secrets:
+  db_root_password:
+    environment: "MYSQL_ROOT_PASSWORD"
+  ssl_certificate:
+    file: ./secrets/${SERVER_NAME}.crt
+  ssl_certificate_key:
+    file: ./secrets/${SERVER_NAME}.key
+
+volumes:
+  certbot_conf:
+  certbot_www:
+  data:
+  mariadb:
+  phpmyadmin:
+  php_socket:
+
+services:
+
+### Let's Encrypt ##############################################################
+# https://mindsers.blog/en/post/https-using-nginx-certbot-docker/
+# https://hub.docker.com/r/certbot/certbot
+# https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker
+# https://hub.docker.com/r/nginxproxy/acme-companion
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   restart: ${RESTART_POLICY}
+  #   volumes:
+  #     - certbot_conf:/etc/letsencrypt/:rw
+  #     - certbot_www:/var/www/certbot:rw
+  #   networks:
+  #     - backend
+
+### MariaDB ####################################################################
+# https://hub.docker.com/_/mariadb
+# https://mariadb.com/kb/en/container-backup-and-restoration/
+  mariadb:
+    image: mariadb:11.2.2-jammy
+    restart: ${RESTART_POLICY}
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db_root_password
+      - TZ=${TZ}
+    secrets:
+       - db_root_password
+    networks:
+      - backend
+
+### PhpMyAdmin #################################################################
+  phpmyadmin:
+    image: phpmyadmin:5.2.1-apache
+    restart: ${RESTART_POLICY}
+    environment:
+      - PMA_ARBITRARY=1
+    volumes:
+      - phpmyadmin:/sessions
+    ports:
+      - 8080:80
+    depends_on:
+      - mariadb
+    networks:
+      - backend
+      - frontend
+
+### PHP-FPM ####################################################################
+  php-fpm:
+    build:
+      context: ./src/php-fpm
+      args:
+        VERSION_PHP: 8.3.1-fpm-alpine3.19
+    restart: ${RESTART_POLICY}
+    volumes:
+      - data:${PROJECT_CONTAINER_DIR}
+      - php_socket:/run/php-fpm
+      - ./src/php-fpm/wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini:ro
+    depends_on:
+      - mariadb
+    networks:
+      - backend
+    extra_hosts:
+      - "${SERVER_NAME}:host-gateway"
+      - "app1.test:host-gateway"
+      - "app2.test:host-gateway"
+      # - "host.docker.internal:host-gateway"
+
+### NGINX ######################################################################
+# https://github.com/h5bp/server-configs-nginx
+# https://github.com/lebinh/nginx-conf
+  nginx:
+    build:
+      context: ./src/nginx
+      args:
+        ENABLED_MODULES: ndk lua
+        PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+        PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
+        # SOCKET: ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}
+        SOCKET: unix:/run/php-fpm/nginx.sock
+        USER_NAME: ${USER_NAME}
+        VERSION_NGINX: 1.25.3-alpine3.18
+    restart: ${RESTART_POLICY}
+    volumes:
+      - certbot_conf:/etc/nginx/ssl:ro
+      - certbot_www:/var/www/certbot:ro
+      - data:${PROJECT_CONTAINER_DIR}
+      - php_socket:/run/php-fpm
+      - ./src/nginx/global:/etc/nginx/global:ro
+      - ./src/nginx/sites:/etc/nginx/sites-available:ro
+      - ./src/nginx/templates:/etc/nginx/templates:ro
+    environment:
+      - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
+      - SERVER_NAME=${SERVER_NAME}
+    secrets:
+       - ssl_certificate
+       - ssl_certificate_key
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      # - certbot
+      - ${PHP_UPSTREAM_CONTAINER}
+    networks:
+      # `backend` needed, if TCP socket used for PHP-FPM
+      # - backend
+      - frontend
+
+### Apache #####################################################################
+  apache:
+    build:
+      context: ./src/httpd
+      args:
+        PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+        PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
+        SERVER_NAME: ${SERVER_NAME}
+        SOCKET: unix:/run/php-fpm/apache.sock
+        USER_NAME: ${USER_NAME}
+        VERSION_APACHE: 2.4.58-alpine3.19
+    restart: ${RESTART_POLICY}
+    volumes:
+      # - certbot_conf:/etc/nginx/ssl:ro
+      # - certbot_www:/var/www/certbot:ro
+      - data:${PROJECT_CONTAINER_DIR}
+      - php_socket:/run/php-fpm
+    environment:
+      - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
+      - SERVER_NAME=${SERVER_NAME}
+    secrets:
+       - ssl_certificate
+       - ssl_certificate_key
+    ports:
+      - 8081:80
+      - 4433:443
+    depends_on:
+      # - certbot
+      - ${PHP_UPSTREAM_CONTAINER}
+    networks:
+      # `backend` needed, if TCP socket used for PHP-FPM
+      # - backend
+      - frontend
+
+### SFTP #######################################################################
+# $ sftp -P 2222 www-data@docker.test
+  sftp:
+    build:
+      context: ./src/sftp
+      args:
+        PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
+        SFTP_PASSWORD: ${SFTP_PASSWORD}
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+    restart: ${RESTART_POLICY}
+    volumes:
+      - data:${PROJECT_CONTAINER_DIR}
+    ports:
+      - 2222:22
+    depends_on:
+      - ${PHP_UPSTREAM_CONTAINER}
+    networks:
+      - frontend

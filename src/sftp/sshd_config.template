@@ -1,0 +1,27 @@
+# https://www.thegeekstuff.com/2012/03/chroot-sftp-setup/
+# https://man7.org/linux/man-pages/man5/sshd_config.5.html
+# ChrootDirectory tokens: https://en.wikibooks.org/wiki/OpenSSH/Cookbook/File_Transfer_with_SFTP
+# Automated Backup: https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Automated_Backup
+# Common pitfall: https://serverfault.com/questions/591781/creating-sftp-users-and-jailing-to-chroot-on-centos-user-authentication-error
+
+AllowGroups ${USER_NAME}
+
+PermitRootLogin no
+AuthorizedKeysFile none
+PasswordAuthentication yes
+PermitEmptyPasswords no
+
+# UsePAM yes
+
+AllowAgentForwarding no
+AllowTcpForwarding no
+GatewayPorts no
+X11Forwarding no
+UseDNS no
+PermitTunnel no
+
+Subsystem	sftp	internal-sftp
+
+Match Group ${USER_NAME}
+	ChrootDirectory /var/www
+	ForceCommand internal-sftp -d html

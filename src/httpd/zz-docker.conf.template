@@ -1,0 +1,177 @@
+# https://github.com/h5bp/server-configs-apache
+
+# TODO
+# https://httpd.apache.org/docs/2.4/rewrite/avoid.html#vhosts
+# https://httpd.apache.org/docs/2.4/mod/mod_vhost_alias.html
+# https://httpd.apache.org/docs/2.4/vhosts/mass.html
+# https://httpd.apache.org/docs/2.4/rewrite/vhosts.html
+# https://httpd.apache.org/docs/2.4/mod/mod_macro.html
+
+# Taken from httpd.conf
+LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
+LoadModule deflate_module modules/mod_deflate.so
+LoadModule proxy_module modules/mod_proxy.so
+LoadModule proxy_fcgi_module modules/mod_proxy_fcgi.so
+LoadModule ssl_module modules/mod_ssl.so
+LoadModule http2_module modules/mod_http2.so
+LoadModule vhost_alias_module modules/mod_vhost_alias.so
+LoadModule rewrite_module modules/mod_rewrite.so
+
+# Enable GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE application/atom+xml
+    AddOutputFilterByType DEFLATE application/geo+json
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/ld+json
+    AddOutputFilterByType DEFLATE application/manifest+json
+    AddOutputFilterByType DEFLATE application/rdf+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/wasm
+    AddOutputFilterByType DEFLATE application/x-web-app-manifest+json
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/eot
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/bmp
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/vnd.microsoft.icon
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/cache-manifest
+    AddOutputFilterByType DEFLATE text/calendar
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/markdown
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/vcard
+    AddOutputFilterByType DEFLATE text/vnd.rim.location.xloc
+    AddOutputFilterByType DEFLATE text/vtt
+    AddOutputFilterByType DEFLATE text/x-component
+    AddOutputFilterByType DEFLATE text/x-cross-domain-policy
+</IfModule>
+
+<IfModule log_config_module>
+    # this log format can be split per-virtual-host based on the first field
+    # using the split-logfile utility.
+    LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
+    # CustomLog "logs/access_log" vcommon
+</IfModule>
+
+# https://httpd.apache.org/docs/2.4/howto/http2.html
+Protocols h2 h2c http/1.1
+H2Push on
+H2EarlyHints on
+
+# https://httpd.apache.org/docs/2.4/mod/core.html#serversignature
+ServerSignature Off
+ServerTokens Prod
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header unset X-Powered-By
+    Header set Content-Security-Policy "upgrade-insecure-requests"
+    Header set Permissions-Policy "autoplay=(), camera=(), microphone=()"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Xss-Protection "1; mode=block"
+</IfModule>
+
+# https://httpd.apache.org/docs/2.4/mod/mod_proxy_fcgi.html
+# https://cwiki.apache.org/confluence/display/httpd/PHP-FPM
+# Disabling the enablereuse setting can mostly solve the problem in that your
+# proxy pool won't become corrupted with bad connections that will affect future requests
+# https://www.ozzu.com/questions/609716/how-to-fix-proxy-fcgierror-70007the-timeout-specified-has-expired
+<FilesMatch "\.php$">
+    <If "-f %{REQUEST_FILENAME}">
+        # Note: The only part that varies is /path/to/app.sock
+        SetHandler "proxy:${SOCKET}|fcgi://localhost/"
+    </If>
+</FilesMatch>
+# Define a matching worker.
+# The part that is matched to the SetHandler is the part that
+# follows the pipe. If you need to distinguish, "localhost; can
+# be anything unique.
+<Proxy "fcgi://localhost/" enablereuse=off max=10>
+</Proxy>
+
+<IfModule dir_module>
+    DirectoryIndex disabled
+    DirectoryIndex index.php index.html
+</IfModule>
+
+# https://httpd.apache.org/docs/2.4/mod/core.html#allowoverride
+DocumentRoot "${PROJECT_CONTAINER_DIR}"
+<Directory "${PROJECT_CONTAINER_DIR}">
+    Options -Indexes +FollowSymLinks
+    AllowOverride FileInfo
+    Require all granted
+</Directory>
+<Directory "/usr/local/apache2/htdocs">
+    AllowOverride None
+    Require all denied
+</Directory>
+
+# Taken from conf/httpd-ssl.conf
+Listen 443
+SSLCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+SSLProxyCipherSuite HIGH:MEDIUM:!MD5:!RC4:!3DES
+SSLHonorCipherOrder on
+SSLProtocol all -SSLv3
+SSLProxyProtocol all -SSLv3
+SSLPassPhraseDialog  builtin
+SSLSessionCache        "shmcb:/usr/local/apache2/logs/ssl_scache(512000)"
+SSLSessionCacheTimeout  300
+
+# Redirect HTTP to HTTPS
+<VirtualHost _default_:80>
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{HTTPS} !on
+        RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    </IfModule>
+</VirtualHost>
+
+<VirtualHost *:443>
+    # https://httpd.apache.org/docs/2.4/vhosts/mass.html
+    # https://serverfault.com/questions/286773/using-virtualdocumentroot-only-if-a-suitable-document-root-exists
+    # get the server name from the Host: header
+    UseCanonicalName Off
+    # include the server name in the filenames used to satisfy requests
+    VirtualDocumentRoot "${PROJECT_CONTAINER_DIR}/%0"
+    # VirtualScriptAlias  "${PROJECT_CONTAINER_DIR}/%0/cgi-bin"
+
+    # ServerName ${SERVER_NAME}
+    # ServerAlias *.${SERVER_NAME}
+    # DocumentRoot ${PROJECT_CONTAINER_DIR}
+
+    # Redirect WWW to non-WWW
+    # https://www.digitalocean.com/community/tutorials/how-to-redirect-www-to-non-www-with-apache-on-ubuntu-14-04
+    # https://simonecarletti.com/blog/2016/08/redirect-domain-http-https-www-apache/
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+        RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,L]
+    </IfModule>
+
+    SSLEngine on
+    SSLCertificateFile /run/secrets/ssl_certificate
+    SSLCertificateKeyFile /run/secrets/ssl_certificate_key
+
+    <FilesMatch "\.(cgi|shtml|phtml|php)$">
+        SSLOptions +StdEnvVars
+    </FilesMatch>
+    <Directory "/usr/local/apache2/cgi-bin">
+        SSLOptions +StdEnvVars
+    </Directory>
+
+    ErrorLog /proc/self/fd/2
+    # CustomLog /proc/self/fd/1 combined
+    CustomLog /proc/self/fd/1 vcommon
+</VirtualHost>

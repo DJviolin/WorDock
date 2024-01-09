@@ -1,0 +1,83 @@
+# Most comprehensive Nginx Configs:
+# https://github.com/h5bp/server-configs-nginx
+
+# https://www.nginx.com/resources/wiki/start/topics/recipes/wordpress/
+# https://developer.wordpress.org/advanced-administration/server/web-server/nginx/
+# https://wordpress.org/support/article/nginx/
+# https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=modern&openssl=1.1.1k&guideline=5.6
+
+# https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
+# https://www.nginx.com/blog/creating-nginx-rewrite-rules/
+
+# Dynamic mass virtual hosts (possible solutions)
+# https://forum.nginx.org/read.php?2,218617,218617
+# https://syshero.org/2013-12-02-nginx-dynamically-configured-mass-virtual-hosting/
+# https://diarmuid.ie/blog/setup-mass-dynamic-virtual-hosts-on-nginx
+# https://stackoverflow.com/questions/8199231/how-to-setup-mass-dynamic-virtual-hosts-in-nginx
+# https://serverfault.com/questions/332804/nginx-dynamic-virtual-hosts
+# https://copyprogramming.com/howto/lt-nginx-how-to-setup-multi-dynamic-virtual-hosts-www-subdomain
+
+server {
+    # listen 443 ssl;
+    # listen [::]:443 ssl;
+    listen [::]:443 ssl default_server;
+    listen 443 ssl default_server;
+    http2 on;
+    index index.php index.html index.htm;
+
+    ssl_certificate /run/secrets/ssl_certificate;
+    ssl_certificate_key /run/secrets/ssl_certificate_key;
+
+	# server_name ${SERVER_NAME};
+    # root ${PROJECT_CONTAINER_DIR}/wordpress;
+
+    # catch all non-www domains (causing slow server performance)
+    # server_name ~(?<domain>.+)$;
+    # root ${PROJECT_CONTAINER_DIR}/$domain/;
+    server_name $http_host;
+    root ${PROJECT_CONTAINER_DIR}/$http_host;
+
+    include global/restrictions.conf;
+
+    location / {
+        # This is cool because no php is touched for static content.
+        # include the "?$args" part so non-default permalinks doesn't break when using query string
+        try_files $uri $uri/ /index.php?$args;
+        # try_files $uri $uri/ /index.php?$is_args$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri /index.php =404;
+        fastcgi_pass php-upstream;
+        fastcgi_index index.php;
+        fastcgi_buffers 16 16k;
+        fastcgi_buffer_size 32k;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        #fixes timeouts
+        fastcgi_read_timeout 600;
+        include fastcgi_params;
+        #
+        #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+        fastcgi_intercept_errors on;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+        expires max;
+        log_not_found off;
+    }
+
+    location ~* \.(webp)$ {
+        expires max;
+        log_not_found off;
+    }
+
+    # Certificate management for production
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot/;
+        log_not_found off;
+    }
+
+    # TODO
+    # error_log /var/log/nginx/wordpress_error.log;
+    # access_log /var/log/nginx/wordpress_access.log;
+}
