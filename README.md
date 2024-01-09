@@ -51,7 +51,6 @@ $ ./bin/compose.sh up
 $ ./bin/compose.sh bootstrap -s app1.test -p secret
 
 # Backup webserver files & database
-# TODO: copy .htaccess
 $ ./bin/compose.sh backup -s app1.test -d /mnt/c/temp
 
 # Restore webserver files & database
