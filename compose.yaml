@@ -43,7 +43,6 @@ services:
       - certbot_live:/etc/letsencrypt/live/${SERVER_NAME}
     environment:
       - LOCALHOST=mkcert
-      - STAGING=true
       - TZ=${TZ}
     networks:
       - backend
