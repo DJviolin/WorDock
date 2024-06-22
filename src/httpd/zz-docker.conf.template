@@ -161,8 +161,10 @@ SSLSessionCacheTimeout  300
     </IfModule>
 
     SSLEngine on
-    SSLCertificateFile /run/secrets/ssl_certificate
-    SSLCertificateKeyFile /run/secrets/ssl_certificate_key
+    # SSLCertificateFile /run/secrets/ssl_certificate
+    # SSLCertificateKeyFile /run/secrets/ssl_certificate_key
+    SSLCertificateFile /etc/letsencrypt/live/${SERVER_NAME}/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/${SERVER_NAME}/privkey.pem
 
     <FilesMatch "\.(cgi|shtml|phtml|php)$">
         SSLOptions +StdEnvVars

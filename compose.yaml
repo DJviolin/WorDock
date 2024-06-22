@@ -153,8 +153,7 @@ services:
         VERSION_APACHE: ${VERSION_APACHE}
     restart: ${RESTART_POLICY}
     volumes:
-      # - certbot_conf:/etc/nginx/ssl:ro
-      # - certbot_www:/var/www/certbot:ro
+      - certbot_live:/etc/letsencrypt/live/${SERVER_NAME}
       - data:${PROJECT_CONTAINER_DIR}
       - php_socket:/run/php-fpm
     environment:
