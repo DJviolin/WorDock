@@ -3,19 +3,7 @@ version: '3.8'
 # https://docs.docker.com/compose/compose-file/08-configs/
 # https://docs.docker.com/compose/compose-file/05-services/#configs
 # https://www.postgresql.org/docs/current/libpq-pgpass.html
-configs:
-  certbot_cli:
-    content: |
-      domains = ${SERVER_NAME}
-      force-renewal = true
-      agree-tos = true
-      # email = ${EMAIL}
-      # no-eff-email = true
-      register-unsafely-without-email = true
-      dns-cloudflare = true
-      dns-cloudflare-credentials = /certbot_dns_cloudflare
-  certbot_dns_cloudflare:
-    content: dns_cloudflare_api_token = ${CLOUDFLARE_API_TOKEN}
+#configs:
 
 networks:
   backend:
@@ -61,11 +49,6 @@ services:
       - LOCALHOST=mkcert
       - STAGING=true
       - TZ=${TZ}
-    configs:
-      - certbot_cli
-      - source: certbot_dns_cloudflare
-        target: /certbot_dns_cloudflare
-        mode: 0600
     networks:
       - backend
 
