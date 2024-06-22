@@ -73,7 +73,7 @@ services:
 # https://hub.docker.com/_/mariadb
 # https://mariadb.com/kb/en/container-backup-and-restoration/
   mariadb:
-    image: mariadb:11.2.2-jammy
+    image: mariadb:${VERSION_MARIADB}
     restart: ${RESTART_POLICY}
     volumes:
       - mariadb:/var/lib/mysql
