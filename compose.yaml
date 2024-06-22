@@ -23,8 +23,6 @@ secrets:
     file: ./secrets/${SERVER_NAME}.key
 
 volumes:
-  certbot_etc:
-  certbot_archive:
   certbot_live:
   data:
   mariadb:
@@ -42,8 +40,6 @@ services:
         VERSION_CERTS: ${VERSION_CERTS}
     restart: ${RESTART_POLICY}
     volumes:
-      - certbot_etc:/etc/letsencrypt
-      - certbot_archive:/etc/letsencrypt/archive/${SERVER_NAME}
       - certbot_live:/etc/letsencrypt/live/${SERVER_NAME}
     environment:
       - LOCALHOST=mkcert
