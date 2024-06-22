@@ -87,7 +87,7 @@ services:
 
 ### PhpMyAdmin #################################################################
   phpmyadmin:
-    image: phpmyadmin:5.2.1-apache
+    image: phpmyadmin:${VERSION_PHPMYADMIN}
     restart: ${RESTART_POLICY}
     environment:
       - PMA_ARBITRARY=1
