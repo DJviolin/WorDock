@@ -106,7 +106,7 @@ services:
     build:
       context: ./src/php-fpm
       args:
-        VERSION_PHP: 8.3.1-fpm-alpine3.19
+        VERSION_PHP: ${VERSION_PHP}
     restart: ${RESTART_POLICY}
     volumes:
       - data:${PROJECT_CONTAINER_DIR}
@@ -135,7 +135,7 @@ services:
         # SOCKET: ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}
         SOCKET: unix:/run/php-fpm/nginx.sock
         USER_NAME: ${USER_NAME}
-        VERSION_NGINX: 1.25.3-alpine3.18
+        VERSION_NGINX: ${VERSION_NGINX}
     restart: ${RESTART_POLICY}
     volumes:
       - certbot_conf:/etc/nginx/ssl:ro
@@ -172,7 +172,7 @@ services:
         SERVER_NAME: ${SERVER_NAME}
         SOCKET: unix:/run/php-fpm/apache.sock
         USER_NAME: ${USER_NAME}
-        VERSION_APACHE: 2.4.58-alpine3.19
+        VERSION_APACHE: ${VERSION_APACHE}
     restart: ${RESTART_POLICY}
     volumes:
       # - certbot_conf:/etc/nginx/ssl:ro
