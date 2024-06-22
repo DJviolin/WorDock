@@ -1,5 +1,22 @@
 version: '3.8'
 
+# https://docs.docker.com/compose/compose-file/08-configs/
+# https://docs.docker.com/compose/compose-file/05-services/#configs
+# https://www.postgresql.org/docs/current/libpq-pgpass.html
+configs:
+  certbot_cli:
+    content: |
+      domains = ${SERVER_NAME}
+      force-renewal = true
+      agree-tos = true
+      # email = ${EMAIL}
+      # no-eff-email = true
+      register-unsafely-without-email = true
+      dns-cloudflare = true
+      dns-cloudflare-credentials = /certbot_dns_cloudflare
+  certbot_dns_cloudflare:
+    content: dns_cloudflare_api_token = ${CLOUDFLARE_API_TOKEN}
+
 networks:
   backend:
     driver: bridge
@@ -18,14 +35,39 @@ secrets:
     file: ./secrets/${SERVER_NAME}.key
 
 volumes:
-  certbot_conf:
-  certbot_www:
+  certbot_etc:
+  certbot_archive:
+  certbot_live:
   data:
   mariadb:
   phpmyadmin:
   php_socket:
 
 services:
+
+### Let's Encrypt & OpenSSL ####################################################
+  certs:
+    build:
+      context: ./src/certs
+      args:
+        SERVER_NAME: ${SERVER_NAME}
+        VERSION_CERTS: ${VERSION_CERTS}
+    restart: ${RESTART_POLICY}
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_archive:/etc/letsencrypt/archive/${SERVER_NAME}
+      - certbot_live:/etc/letsencrypt/live/${SERVER_NAME}
+    environment:
+      - LOCALHOST=mkcert
+      - STAGING=true
+      - TZ=${TZ}
+    configs:
+      - certbot_cli
+      - source: certbot_dns_cloudflare
+        target: /certbot_dns_cloudflare
+        mode: 0600
+    networks:
+      - backend
 
 ### MariaDB ####################################################################
 # https://hub.docker.com/_/mariadb

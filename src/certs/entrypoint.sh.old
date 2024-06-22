@@ -1,0 +1,98 @@
+#!/bin/sh
+set -e
+
+ROOT_CRT="${CERT_DIR}/ca.localhost.crt" # Import to browsers
+ROOT_KEY="${CERT_DIR}/ca.localhost.key"
+
+SERVER_CRT="${CERT_DIR}/localhost.crt"
+SERVER_KEY="${CERT_DIR}/localhost.key"
+SERVER_CSR="${CERT_DIR}/localhost.csr"
+
+# if [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
+#     echo "Certificates not found. Generating..."
+# 	# openssl req -x509 \
+# 	# 	-nodes -days 365 -newkey rsa:2048 \
+# 	# 	-keyout "${SERVER_KEY}" -out "${SERVER_CRT}" \
+# 	# 	-extensions EXT -config "${OPENSSL_CONF}"
+
+# 	# Original
+# 	# openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+# 	# 	-keyout "${SERVER_KEY}" -out "${SERVER_CRT}" \
+# 	# 	-subj "/C=HU/ST=Pest/L=Budapest/O=Docker Compose Company/CN=${SERVER_NAME}"
+
+# 	# openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+# 	# 	-keyout "${SERVER_KEY}" -out "${SERVER_CRT}" \
+# 	# 	-subj "/C=HU/ST=Pest/L=Budapest/O=Docker Compose Company/CN=${SERVER_NAME}"
+
+# 	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+# 		-keyout "${SERVER_KEY}" -out "${SERVER_CRT}" \
+# 		-subj "/CN=${SERVER_NAME}"
+# else
+#     echo "Certificates already exist. Skipping generation."
+# fi
+
+
+
+
+# # Create OpenSSL config content
+# cat > "$OPENSSL_CONF" <<EOF
+# [req]
+# default_bits = 2048
+# prompt = no
+# default_md = sha256
+# distinguished_name = dn
+
+# [dn]
+# CN = ${SERVER_NAME}
+
+# [ext]
+# subjectAltName = @alt_names
+
+# [alt_names]
+# DNS.1 = ${SERVER_NAME}
+# IP.1 = 127.0.0.1
+# EOF
+
+# # Check if certificates exist and generate if they don't
+# if [ ! -f "${ROOT_CRT}" ] || [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ] || [ ! -f "${DH_PARAM}" ]; then
+#     echo "Certificates not found. Generating..."
+#     # Create your own Certificate Authority
+#     openssl genrsa -out "${ROOT_KEY}" 2048
+#     openssl req -x509 -new -nodes -key "${ROOT_KEY}" -sha256 -days 1024 -out "${ROOT_CRT}" -subj "/CN=${SERVER_NAME} CA"
+#     # Generate a private key
+#     openssl genrsa -out "${SERVER_KEY}" 2048
+#     # Create a certificate signing request (CSR)
+#     openssl req -new -key "${SERVER_KEY}" -out "${SERVER_CSR}" -subj "/CN=${SERVER_NAME}" -config "${OPENSSL_CONF}"
+#     # Create the certificate for localhost using your CA
+#     openssl x509 -req -in "${SERVER_CSR}" -CA "${ROOT_CRT}" -CAkey "${ROOT_KEY}" -CAcreateserial -out "${SERVER_CRT}" -days 365 -sha256 -extfile "${OPENSSL_CONF}" -extensions ext
+# 	# Generate Diffie-Hellman parameters
+# 	# openssl dhparam -out "${DH_PARAM}" 2048
+#     echo "Certificates generated successfully."
+# else
+#     echo "Certificates already exist. Skipping generation."
+# fi
+
+# Check if certificates exist and generate if they don't
+if [ ! -f "${ROOT_CRT}" ] || [ ! -f "${ROOT_KEY}" ] || [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
+    echo "Certificates not found. Generating..."
+    # Create your own Certificate Authority
+    openssl genrsa -out "${ROOT_KEY}" 2048
+	# Create and self sign the Root Certificate
+    # openssl req -x509 -new -nodes -key "${ROOT_KEY}" -sha256 -days 1024 -out "${ROOT_CRT}" -subj "/CN=${SERVER_NAME} CA"
+	openssl req -x509 -new -nodes -key "${ROOT_KEY}" -sha256 -days 1024 -out "${ROOT_CRT}" -subj "/CN=${SERVER_NAME}" \
+		-addext "basicConstraints=critical,CA:TRUE" \
+		-addext "keyUsage=critical,keyCertSign,cRLSign"
+	# Generate a private key
+    openssl genrsa -out "${SERVER_KEY}" 2048
+    # Create a certificate signing request (CSR)
+    # openssl req -new -key "${SERVER_KEY}" -out "${SERVER_CSR}" -subj "/CN=${SERVER_NAME}" -config "${OPENSSL_CONF}"
+	openssl req -new -key "${SERVER_KEY}" -out "${SERVER_CSR}" -subj "/CN=${SERVER_NAME}"
+    # Create the certificate for localhost using your CA
+    # openssl x509 -req -in "${SERVER_CSR}" -CA "${ROOT_CRT}" -CAkey "${ROOT_KEY}" -CAcreateserial -out "${SERVER_CRT}" -days 365 -sha256 -extfile "${OPENSSL_CONF}" -extensions ext
+	openssl x509 -req -in "${SERVER_CSR}" -CA "${ROOT_CRT}" -CAkey "${ROOT_KEY}" -CAcreateserial -out "${SERVER_CERT}" -days 365 -sha256
+    echo "Certificates generated successfully."
+else
+    echo "Certificates already exist. Skipping generation."
+fi
+
+exit 0
