@@ -167,7 +167,7 @@ services:
       - 8081:80
       - 4433:443
     depends_on:
-      # - certbot
+      - certs
       - ${PHP_UPSTREAM_CONTAINER}
     networks:
       # `backend` needed, if TCP socket used for PHP-FPM
