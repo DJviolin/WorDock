@@ -10,7 +10,22 @@ SERVER_CRT="${CERT_DIR}/fullchain.pem"  # Server certificate
 SERVER_KEY="${CERT_DIR}/privkey.pem"  # Server private key
 SERVER_CSR="${CERT_DIR}/cert.csr"  # Certificate Signing Request for the server
 
-if [ "${LOCALHOST}" = "openssl" ]; then  # TODO: needs work, root CA not recognised
+if [ "${LOCALHOST}" = "mkcert" ]; then
+	echo "Using mkcert for certificates"
+	export CAROOT="${CERT_DIR}"  # mkcert
+	# Install the local CA in the system trust store
+    mkcert -install
+	# Check if certificates exist and generate if they don't
+	if [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
+		echo "Certificates not found. Generating..."
+		# Generate certificates for the server
+        mkcert -cert-file "${SERVER_CRT}" -key-file "${SERVER_KEY}" "${SERVER_NAME}"
+		echo "Certificates generated successfully."
+	else
+		echo "Certificates already exist. Skipping generation."
+	fi
+else
+	# TODO: needs work, root CA not recognised
 	echo "Using OpenSSL for certificates"
 	# Check if certificates exist and generate if they don't
 	if [ ! -f "${ROOT_CRT}" ] || [ ! -f "${ROOT_KEY}" ] || [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
@@ -31,32 +46,5 @@ if [ "${LOCALHOST}" = "openssl" ]; then  # TODO: needs work, root CA not recogni
 		echo "Certificates generated successfully."
 	else
 		echo "Certificates already exist. Skipping generation."
-	fi
-elif [ "${LOCALHOST}" = "mkcert" ]; then
-	echo "Using mkcert for certificates"
-	export CAROOT="${CERT_DIR}"  # mkcert
-	# Install the local CA in the system trust store
-    mkcert -install
-	# Check if certificates exist and generate if they don't
-	if [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
-		echo "Certificates not found. Generating..."
-		# Generate certificates for the server
-        mkcert -cert-file "${SERVER_CRT}" -key-file "${SERVER_KEY}" "${SERVER_NAME}"
-		echo "Certificates generated successfully."
-	else
-		echo "Certificates already exist. Skipping generation."
-	fi
-else
-	echo "Using Certbot for certificates"
-	# $ certbot --help dns-cloudflare
-	if [ "${STAGING}" = "true" ]; then
-		echo "\$STAGING environment variable is ${STAGING}"
-		certbot certonly \
-			--config=/certbot_cli \
-			--test-cert
-	else
-		echo "\$STAGING environment variable is not available, using production"
-		certbot certonly \
-			--config=/certbot_cli
 	fi
 fi
