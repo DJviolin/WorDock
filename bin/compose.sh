@@ -116,11 +116,11 @@ bootstrap_fn() {
 	' -v"
 
 	# Catch-All domain to Apache
-	# docker compose exec php-fpm sh -c "set -e \
-	# 	&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
-	# 	&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
-	# 	&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
-	# "
+	docker compose exec php-fpm sh -c "set -e \
+		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
+		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+	"
 }
 
 backup_fn() {
