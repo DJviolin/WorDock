@@ -98,9 +98,10 @@ bootstrap_fn() {
 	db="${site}_db"
 	user="${site}_user"
 
+	# && echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 	docker compose exec php-fpm sh -c "set -e \
 		&& mkdir -p $dir && curl -L https://wordpress.org/latest.tar.gz | tar -xzf - -C $dir --strip-components=1 \
-		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
+		&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/phpinfo.php \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
 	"
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
