@@ -100,45 +100,45 @@ services:
       # - "app2.test:host-gateway"
       # - "host.docker.internal:host-gateway"
 
-### NGINX ######################################################################
-# https://github.com/h5bp/server-configs-nginx
-# https://github.com/lebinh/nginx-conf
-  nginx:
-    build:
-      context: ./src/nginx
-      args:
-        ENABLED_MODULES: ndk lua
-        PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
-        PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
-        # SOCKET: ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}
-        SOCKET: unix:/run/php-fpm/nginx.sock
-        USER_NAME: ${USER_NAME}
-        VERSION_NGINX: ${VERSION_NGINX}
-    restart: ${RESTART_POLICY}
-    volumes:
-      - certbot_conf:/etc/nginx/ssl:ro
-      - certbot_www:/var/www/certbot:ro
-      - data:${PROJECT_CONTAINER_DIR}
-      - socket_php:/run/php-fpm
-      - ./src/nginx/global:/etc/nginx/global:ro
-      - ./src/nginx/sites:/etc/nginx/sites-available:ro
-      - ./src/nginx/templates:/etc/nginx/templates:ro
-    environment:
-      - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
-      - SERVER_NAME=${SERVER_NAME}
-    # secrets:
-    #    - ssl_certificate
-    #    - ssl_certificate_key
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      # - certbot
-      - ${PHP_UPSTREAM_CONTAINER}
-    networks:
-      # `backend` needed, if TCP socket used for PHP-FPM
-      # - backend
-      - frontend
+# ### NGINX ######################################################################
+# # https://github.com/h5bp/server-configs-nginx
+# # https://github.com/lebinh/nginx-conf
+#   nginx:
+#     build:
+#       context: ./src/nginx
+#       args:
+#         ENABLED_MODULES: ndk lua
+#         PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+#         PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
+#         # SOCKET: ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}
+#         SOCKET: unix:/run/php-fpm/nginx.sock
+#         USER_NAME: ${USER_NAME}
+#         VERSION_NGINX: ${VERSION_NGINX}
+#     restart: ${RESTART_POLICY}
+#     volumes:
+#       - certbot_conf:/etc/nginx/ssl:ro
+#       - certbot_www:/var/www/certbot:ro
+#       - data:${PROJECT_CONTAINER_DIR}
+#       - socket_php:/run/php-fpm
+#       - ./src/nginx/global:/etc/nginx/global:ro
+#       - ./src/nginx/sites:/etc/nginx/sites-available:ro
+#       - ./src/nginx/templates:/etc/nginx/templates:ro
+#     environment:
+#       - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
+#       - SERVER_NAME=${SERVER_NAME}
+#     secrets:
+#        - ssl_certificate
+#        - ssl_certificate_key
+#     ports:
+#       - 80:80
+#       - 443:443
+#     depends_on:
+#       # - certbot
+#       - ${PHP_UPSTREAM_CONTAINER}
+#     networks:
+#       # `backend` needed, if TCP socket used for PHP-FPM
+#       # - backend
+#       - frontend
 
 ### Apache #####################################################################
   apache:
