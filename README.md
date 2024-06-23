@@ -43,8 +43,8 @@ $ cp .env.example .env
 $ ./bin/compose.sh up
 
 # Bootstrap the environment
-# Database name: docker.test_db
-# Database user: docker.test_user
+# Database name: app1.test_db
+# Database user: app1.test_user
 # Database password: secret
 # Database host: mariadb
 $ ./bin/compose.sh bootstrap -s app1.test -p secret
