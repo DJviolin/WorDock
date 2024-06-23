@@ -105,6 +105,7 @@ bootstrap_fn() {
 	# "
 	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
+		&& mkdir -p $dir \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
 		&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/phpinfo.php \
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
