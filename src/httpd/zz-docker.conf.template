@@ -7,6 +7,9 @@
 # https://httpd.apache.org/docs/2.4/rewrite/vhosts.html
 # https://httpd.apache.org/docs/2.4/mod/mod_macro.html
 
+# Set the 'ServerName' directive globally to suppress this message
+ServerName localhost
+
 # Taken from httpd.conf
 LoadModule socache_shmcb_module modules/mod_socache_shmcb.so
 LoadModule deflate_module modules/mod_deflate.so
