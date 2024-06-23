@@ -99,26 +99,25 @@ bootstrap_fn() {
 	user="${site}_user"
 
 	# && mkdir -p $dir && curl -L https://wordpress.org/latest.tar.gz | tar -xzf - -C $dir --strip-components=1 \
-	# docker compose exec php-fpm sh -c "set -e \
-	# 	&& mkdir -p $dir \
-	# 	&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
-	# 	&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
-	# "
-
-	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
-		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
-		&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/phpinfo.php \
-		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
-		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+		&& mkdir -p $dir \
+		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
+		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
 	"
-
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
 		CREATE DATABASE IF NOT EXISTS \`$db\` COLLATE \"$COLLATION\"; \
 		CREATE USER IF NOT EXISTS \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
 		GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
 		ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
 	' -v"
+
+	# Catch-All domain to Apache
+	# docker compose exec php-fpm sh -c "set -e \
+	# 	&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+	# 	&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/phpinfo.php \
+	# 	&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
+	# 	&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+	# "
 }
 
 backup_fn() {
