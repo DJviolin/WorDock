@@ -42,8 +42,8 @@ prune_fn() {
 	echo "Remove all containers"
 		docker container stop $(docker container ls --all --quiet) 2>/dev/null || true
 		docker container prune --force
-	echo "Remove all unused local volumes"
-		docker volume prune --force
+	# echo "Remove all unused local volumes"
+	# 	docker volume prune --force
 	echo "Remove all unused networks"
 		docker network prune --force
 	echo "Remove unused images"
