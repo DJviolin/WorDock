@@ -88,11 +88,11 @@ services:
       - mariadb
     networks:
       - backend
-    extra_hosts:
-      - "${SERVER_NAME}:host-gateway"
-      # - "app1.test:host-gateway"
-      # - "app2.test:host-gateway"
-      # - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "${SERVER_NAME}:host-gateway"
+    #   # - "app1.test:host-gateway"
+    #   # - "app2.test:host-gateway"
+    #   # - "host.docker.internal:host-gateway"
 
 # ### NGINX ######################################################################
 # # https://github.com/h5bp/server-configs-nginx
