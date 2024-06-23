@@ -98,9 +98,9 @@ bootstrap_fn() {
 	db="${site}_db"
 	user="${site}_user"
 
+	# && echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 	docker compose exec php-fpm sh -c "set -e \
 		&& mkdir -p $dir && curl -L https://wordpress.org/latest.tar.gz | tar -xzf - -C $dir --strip-components=1 \
-		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
 	"
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
@@ -113,6 +113,7 @@ bootstrap_fn() {
 	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME \
+		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
 	"
