@@ -15,10 +15,6 @@ networks:
 secrets:
   db_root_password:
     environment: "MYSQL_ROOT_PASSWORD"
-  # ssl_certificate:
-  #   file: ./secrets/${SERVER_NAME}.crt
-  # ssl_certificate_key:
-  #   file: ./secrets/${SERVER_NAME}.key
 
 volumes:
   certbot_live:
@@ -157,9 +153,6 @@ services:
     environment:
       - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
       - SERVER_NAME=${SERVER_NAME}
-    # secrets:
-    #    - ssl_certificate
-    #    - ssl_certificate_key
     ports:
       - 8081:80
       - 4433:443
