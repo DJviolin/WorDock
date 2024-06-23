@@ -154,8 +154,8 @@ services:
       - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
       - SERVER_NAME=${SERVER_NAME}
     ports:
-      - 8081:80
-      - 4433:443
+      - 80:80
+      - 443:443
     depends_on:
       - certs
       - php-fpm
