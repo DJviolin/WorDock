@@ -100,7 +100,7 @@ bootstrap_fn() {
 	db="${site}_db"
 	user="${site}_user"
 
-	docker compose cp $DIR/benchmark.html php-fpm:$dir/benchmark.html
+	# docker compose cp $DIR/benchmark.html php-fpm:$dir/benchmark.html
 	docker compose exec php-fpm sh -c "set -e \
 		&& mkdir -p $dir && curl -L https://wordpress.org/latest.tar.gz | tar -xzf - -C $dir --strip-components=1 \
 		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
