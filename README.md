@@ -39,11 +39,6 @@ $ cp .env.example .env
 ```
 
 ```sh
-# Generate certificates for local development (run this before `./bin/compose.sh up`)
-# https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-16-04
-# https://www.digitalocean.com/community/tutorials/openssl-essentials-working-with-ssl-certificates-private-keys-and-csrs
-$ docker run -it --rm -v "./secrets/:/secrets/" alpine/openssl:latest req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /secrets/docker.test.key -out /secrets/docker.test.crt -subj "/C=HU/ST=Pest/L=Budapest/O=Docker Compose Company/CN=docker.test"
-
 # Start docker-compose
 $ ./bin/compose.sh up
 
