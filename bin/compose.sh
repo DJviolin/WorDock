@@ -103,7 +103,7 @@ bootstrap_fn() {
 	# 	&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 	# 	&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
 	# "
-	docker compose exec php-fpm sh -c "set -e \
+	docker compose exec php-fpm sh -c " \
 		&& mkdir -p $dir \
 		&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/phpinfo.php \
 		&& chown -R $USER_NAME:$USER_NAME $dir \
