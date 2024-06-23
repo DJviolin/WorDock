@@ -9,10 +9,6 @@ Add these lines to your `hosts` file:
 ```hosts
 127.0.0.1 docker.test
 127.0.0.1 www.docker.test
-127.0.0.1 app1.test
-127.0.0.1 www.app1.test
-127.0.0.1 app2.test
-127.0.0.1 www.app2.test
 ```
 
 This project can be used with any Linux/Mac environment with Docker installed. WSL2 + Docker Desktop is recommended for Windows users.
