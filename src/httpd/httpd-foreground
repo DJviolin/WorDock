@@ -4,4 +4,5 @@ set -e
 # Apache gets grumpy about PID files pre-existing
 rm -f /usr/local/apache2/logs/httpd.pid
 
+sleep 5 # Added to wait for certs container
 exec httpd -DFOREGROUND "$@"
