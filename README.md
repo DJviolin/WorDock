@@ -47,16 +47,16 @@ $ ./bin/compose.sh up
 # Database user: docker.test_user
 # Database password: secret
 # Database host: mariadb
-$ ./bin/compose.sh bootstrap -s docker.test -p secret
+$ ./bin/compose.sh bootstrap -s app1.test -p secret
 
 # Verify everything running correctly
 https://docker.test/phpinfo.php
 
 # Backup webserver files & database
-$ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
+$ ./bin/compose.sh backup -s app1.test -d /mnt/c/temp
 
 # Restore webserver files & database
-$ ./bin/compose.sh restore -s docker.test -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
+$ ./bin/compose.sh restore -s app1.test -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
 
 # Stop the service
 $ ./bin/compose.sh down
