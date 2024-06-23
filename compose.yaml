@@ -108,9 +108,9 @@ services:
 #       context: ./src/nginx
 #       args:
 #         ENABLED_MODULES: ndk lua
-#         PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+#         PHP_UPSTREAM_CONTAINER: php-fpm
 #         PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
-#         # SOCKET: ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}
+#         # SOCKET: php-fpm:${PHP_UPSTREAM_PORT}
 #         SOCKET: unix:/run/php-fpm/nginx.sock
 #         USER_NAME: ${USER_NAME}
 #         VERSION_NGINX: ${VERSION_NGINX}
@@ -134,7 +134,7 @@ services:
 #       - 443:443
 #     depends_on:
 #       # - certbot
-#       - ${PHP_UPSTREAM_CONTAINER}
+#       - php-fpm
 #     networks:
 #       # `backend` needed, if TCP socket used for PHP-FPM
 #       # - backend
@@ -145,7 +145,7 @@ services:
     build:
       context: ./src/httpd
       args:
-        PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+        PHP_UPSTREAM_CONTAINER: php-fpm
         PROJECT_CONTAINER_DIR: ${PROJECT_CONTAINER_DIR}
         SERVER_NAME: ${SERVER_NAME}
         SOCKET: unix:/run/php-fpm/apache.sock
@@ -167,7 +167,7 @@ services:
       - 4433:443
     depends_on:
       - certs
-      - ${PHP_UPSTREAM_CONTAINER}
+      - php-fpm
     networks:
       # `backend` needed, if TCP socket used for PHP-FPM
       # - backend
@@ -189,6 +189,6 @@ services:
     ports:
       - 2222:22
     depends_on:
-      - ${PHP_UPSTREAM_CONTAINER}
+      - php-fpm
     networks:
       - frontend
