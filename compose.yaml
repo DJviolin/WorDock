@@ -27,7 +27,7 @@ volumes:
   data:
   mariadb:
   phpmyadmin:
-  php_socket:
+  socket_php:
 
 services:
 
@@ -88,7 +88,7 @@ services:
     restart: ${RESTART_POLICY}
     volumes:
       - data:${PROJECT_CONTAINER_DIR}
-      - php_socket:/run/php-fpm
+      - socket_php:/run/php-fpm
       - ./src/php-fpm/wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini:ro
     depends_on:
       - mariadb
@@ -119,7 +119,7 @@ services:
       - certbot_conf:/etc/nginx/ssl:ro
       - certbot_www:/var/www/certbot:ro
       - data:${PROJECT_CONTAINER_DIR}
-      - php_socket:/run/php-fpm
+      - socket_php:/run/php-fpm
       - ./src/nginx/global:/etc/nginx/global:ro
       - ./src/nginx/sites:/etc/nginx/sites-available:ro
       - ./src/nginx/templates:/etc/nginx/templates:ro
@@ -155,7 +155,7 @@ services:
     volumes:
       - certbot_live:/etc/letsencrypt/live/${SERVER_NAME}
       - data:${PROJECT_CONTAINER_DIR}
-      - php_socket:/run/php-fpm
+      - socket_php:/run/php-fpm
     environment:
       - PROJECT_CONTAINER_DIR=${PROJECT_CONTAINER_DIR}
       - SERVER_NAME=${SERVER_NAME}
