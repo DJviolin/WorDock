@@ -101,7 +101,7 @@ bootstrap_fn() {
 	# docker compose exec php-fpm sh -c "set -e \
 	# 	&& mkdir -p $dir \
 	# 	&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
-	# 	&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
+	# 	&& chown -R $USER_NAME:$USER_NAME $dir \
 	# "
 	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
@@ -110,7 +110,7 @@ bootstrap_fn() {
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME \
 		&& mkdir -p $dir \
-		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
+		&& chown -R $USER_NAME:$USER_NAME $dir \
 	"
 
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
