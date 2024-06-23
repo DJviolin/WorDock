@@ -29,6 +29,9 @@ RUN set -e \
 	&& mkdir -p ${PROJECT_CONTAINER_DIR} \
 	&& chown ${USER_NAME}:${USER_NAME} ${PROJECT_CONTAINER_DIR} \
 	&& apk del --no-network .build-deps \
-	&& rm /tmp/zz-docker.conf.template
+	&& rm /tmp/zz-docker.conf.template \
+	&& mv /usr/local/bin/httpd-foreground /usr/local/bin/httpd-foreground.example
+
+COPY httpd-foreground /usr/local/bin/
 
 EXPOSE 80 443
