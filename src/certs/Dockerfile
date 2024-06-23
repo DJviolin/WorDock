@@ -19,7 +19,7 @@ RUN set -e \
 		--repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
 		--repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
 			mkcert \
-	&& mkdir -p /etc/letsencrypt/live/${SERVER_NAME} \
+	&& mkdir -p /opt/crontabs /etc/letsencrypt/live/${SERVER_NAME} \
 	# https://crontab.cronhub.io/
 	# At 12:00 AM, every 30 days: 0 0 */30 * *
 	# At 12:00 AM and 12:00 PM: 0 0,12 * * *
