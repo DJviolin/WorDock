@@ -24,27 +24,27 @@ if [ "${LOCALHOST}" = "mkcert" ]; then
 	else
 		echo "Certificates already exist. Skipping generation."
 	fi
-else
-	# TODO: needs work, root CA not recognised
-	echo "Using OpenSSL for certificates"
-	# Check if certificates exist and generate if they don't
-	if [ ! -f "${ROOT_CRT}" ] || [ ! -f "${ROOT_KEY}" ] || [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
-		echo "Certificates not found. Generating..."
-		# Create your own Certificate Authority
-		openssl genrsa -out "${ROOT_KEY}" 2048
-		# Create and self sign the Root Certificate
-		openssl req -x509 -new -nodes -key "${ROOT_KEY}" -sha256 -days 1024 \
-			-out "${ROOT_CRT}" -subj "/CN=OpenSSL root CA for localhost" \
-			-addext "basicConstraints=critical,CA:TRUE" \
-			-addext "keyUsage=critical,keyCertSign,cRLSign"
-		# Generate a private key
-		openssl genrsa -out "${SERVER_KEY}" 2048
-		# Create a certificate signing request (CSR)
-		openssl req -new -key "${SERVER_KEY}" -out "${SERVER_CSR}" -subj "/CN=${SERVER_NAME}"
-		# Create the certificate for localhost using your CA
-		openssl x509 -req -in "${SERVER_CSR}" -CA "${ROOT_CRT}" -CAkey "${ROOT_KEY}" -CAcreateserial -out "${SERVER_CRT}" -days 90 -sha256
-		echo "Certificates generated successfully."
-	else
-		echo "Certificates already exist. Skipping generation."
-	fi
+# else
+# 	# TODO: needs work, root CA not recognised
+# 	echo "Using OpenSSL for certificates"
+# 	# Check if certificates exist and generate if they don't
+# 	if [ ! -f "${ROOT_CRT}" ] || [ ! -f "${ROOT_KEY}" ] || [ ! -f "${SERVER_CRT}" ] || [ ! -f "${SERVER_KEY}" ]; then
+# 		echo "Certificates not found. Generating..."
+# 		# Create your own Certificate Authority
+# 		openssl genrsa -out "${ROOT_KEY}" 2048
+# 		# Create and self sign the Root Certificate
+# 		openssl req -x509 -new -nodes -key "${ROOT_KEY}" -sha256 -days 1024 \
+# 			-out "${ROOT_CRT}" -subj "/CN=OpenSSL root CA for localhost" \
+# 			-addext "basicConstraints=critical,CA:TRUE" \
+# 			-addext "keyUsage=critical,keyCertSign,cRLSign"
+# 		# Generate a private key
+# 		openssl genrsa -out "${SERVER_KEY}" 2048
+# 		# Create a certificate signing request (CSR)
+# 		openssl req -new -key "${SERVER_KEY}" -out "${SERVER_CSR}" -subj "/CN=${SERVER_NAME}"
+# 		# Create the certificate for localhost using your CA
+# 		openssl x509 -req -in "${SERVER_CSR}" -CA "${ROOT_CRT}" -CAkey "${ROOT_KEY}" -CAcreateserial -out "${SERVER_CRT}" -days 90 -sha256
+# 		echo "Certificates generated successfully."
+# 	else
+# 		echo "Certificates already exist. Skipping generation."
+# 	fi
 fi
