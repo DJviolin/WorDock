@@ -17,10 +17,10 @@ networks:
 secrets:
   db_root_password:
     environment: "MYSQL_ROOT_PASSWORD"
-  ssl_certificate:
-    file: ./secrets/${SERVER_NAME}.crt
-  ssl_certificate_key:
-    file: ./secrets/${SERVER_NAME}.key
+  # ssl_certificate:
+  #   file: ./secrets/${SERVER_NAME}.crt
+  # ssl_certificate_key:
+  #   file: ./secrets/${SERVER_NAME}.key
 
 volumes:
   certbot_live:
