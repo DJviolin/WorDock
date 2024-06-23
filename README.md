@@ -9,10 +9,6 @@ Add these lines to your `hosts` file:
 ```hosts
 127.0.0.1 docker.test
 127.0.0.1 www.docker.test
-127.0.0.1 app1.test
-127.0.0.1 www.app1.test
-127.0.0.1 app2.test
-127.0.0.1 www.app2.test
 ```
 
 This project can be used with any Linux/Mac environment with Docker installed. WSL2 + Docker Desktop is recommended for Windows users.
@@ -43,20 +39,20 @@ $ cp .env.example .env
 $ ./bin/compose.sh up
 
 # Bootstrap the environment
-# Database name: app1.test_db
-# Database user: app1.test_user
+# Database name: docker.test_db
+# Database user: docker.test_user
 # Database password: secret
 # Database host: mariadb
-$ ./bin/compose.sh bootstrap -s app1.test -p secret
+$ ./bin/compose.sh bootstrap -s docker.test -p secret
 
 # Verify everything running correctly
 https://docker.test/phpinfo.php
 
 # Backup webserver files & database
-$ ./bin/compose.sh backup -s app1.test -d /mnt/c/temp
+$ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
 
 # Restore webserver files & database
-$ ./bin/compose.sh restore -s app1.test -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
+$ ./bin/compose.sh restore -s docker.test -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
 
 # Stop the service
 $ ./bin/compose.sh down
