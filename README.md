@@ -46,7 +46,7 @@ $ ./bin/compose.sh up
 $ ./bin/compose.sh bootstrap -s docker.test -p secret
 
 # Verify everything running correctly
-https://docker.test:4433/phpinfo.php
+https://docker.test/phpinfo.php
 
 # Backup webserver files & database
 $ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
