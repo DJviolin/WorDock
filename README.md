@@ -61,6 +61,4 @@ $ ./bin/compose.sh down
 
 # Stop the service and destroy everything
 $ ./bin/compose.sh prune
-# Remove backups on the host
-$ rm -rf ~/.docker.test
 ```
