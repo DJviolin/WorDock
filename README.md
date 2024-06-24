@@ -51,7 +51,7 @@ https://docker.test/phpinfo.php
 # Use an SFTP client to access the files (password: examplepass)
 sftp -P 2222 www-data@docker.test
 
-# Open your app after copied your files
+# Open your app after you copied the files
 https://docker.test/app1
 
 # Backup webserver files & database
