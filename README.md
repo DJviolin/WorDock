@@ -63,6 +63,6 @@ $ ./bin/compose.sh restore -s docker.test -p secret -f /mnt/c/temp/<FILE_NAME>.t
 # Stop the service
 $ ./bin/compose.sh down
 
-# Stop the service and destroy everything
+# Stop the service and destroy everything (except volumes)
 $ ./bin/compose.sh prune
 ```
