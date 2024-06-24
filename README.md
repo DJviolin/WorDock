@@ -48,10 +48,11 @@ $ ./bin/compose.sh bootstrap -s app1 -p secret
 # Verify everything running correctly
 https://docker.test/phpinfo.php
 
-# Open your app
-https://docker.test/app1
 # Use SFTP client to access the files (password: examplepass)
 sftp -P 2222 www-data@docker.test
+
+# Open your app after copied your files
+https://docker.test/app1
 
 # Backup webserver files & database
 $ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
