@@ -110,7 +110,6 @@ bootstrap_fn() {
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME $dir \
 	"
-
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
 		CREATE DATABASE IF NOT EXISTS \`$db\` COLLATE \"$COLLATION\"; \
 		CREATE USER IF NOT EXISTS \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
