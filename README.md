@@ -39,14 +39,19 @@ $ cp .env.example .env
 $ ./bin/compose.sh up
 
 # Bootstrap the environment
-# Database name: docker.test_db
-# Database user: docker.test_user
+# Database name: app1_db
+# Database user: app1_user
 # Database password: secret
 # Database host: mariadb
-$ ./bin/compose.sh bootstrap -s docker.test -p secret
+$ ./bin/compose.sh bootstrap -s app1 -p secret
 
 # Verify everything running correctly
 https://docker.test/phpinfo.php
+
+# Open your app
+https://docker.test/app1
+# Use SFTP client to access the files
+sftp -P 2222 www-data@docker.test
 
 # Backup webserver files & database
 $ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
