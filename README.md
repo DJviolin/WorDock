@@ -28,13 +28,10 @@ $ sudo apt update && sudo apt upgrade -y
 
 ## Usage
 
-Copy `.env` file into it's place:
-
 ```sh
+# Copy `.env` file into it's place
 $ cp .env.example .env
-```
 
-```sh
 # Start docker-compose
 $ ./bin/compose.sh up
 
