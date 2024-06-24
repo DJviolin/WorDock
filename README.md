@@ -50,7 +50,7 @@ https://docker.test/phpinfo.php
 
 # Open your app
 https://docker.test/app1
-# Use SFTP client to access the files
+# Use SFTP client to access the files (password: examplepass)
 sftp -P 2222 www-data@docker.test
 
 # Backup webserver files & database
