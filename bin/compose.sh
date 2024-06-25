@@ -204,12 +204,14 @@ restore_fn() {
 	dest="$PROJECT_HOST_DIR/$file"
 	db="${site}_db"
 	user="${site}_user"
-	dir_data="$dest/data"
+	# dir_data="$dest/data"
 	dir_sql="$dest/sql/$db.sql"
 	mkdir -p $dest
 	tar -xf $archive -C $dest
 
-	docker compose cp $dir_data/ php-fpm:/tmp/
+	docker compose cp $dest/data/ php-fpm:/tmp/
+	docker compose cp $dir_sql mariadb:/tmp/
+
 	# && mv $PROJECT_CONTAINER_DIR/$site/htaccess $PROJECT_CONTAINER_DIR/$site/.htaccess \
 		# && mv /tmp/data/* $PROJECT_CONTAINER_DIR/$site \
 		# && chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
@@ -217,6 +219,9 @@ restore_fn() {
 	docker compose exec php-fpm sh -c " \
 		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
+		&& mv /tmp/data/ $PROJECT_CONTAINER_DIR/$site \
+		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
+		&& rm -rf /tmp/data \
 	"
 
 	# docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
@@ -228,7 +233,7 @@ restore_fn() {
 	# 	GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
 	# 	ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
 	# ' -v"
-	# docker compose cp $dir_sql mariadb:/tmp/
+
 	# docker compose exec mariadb sh -c "set -e \
 	# 	&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
 	# 	&& rm /tmp/$db.sql \
