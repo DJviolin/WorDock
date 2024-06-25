@@ -152,7 +152,6 @@ backup_fn() {
 	db="${site}_db"
 	mkdir -p $dest_data $dest_sql
 
-	echo "dest_data: $dest/$site"
 	docker compose cp --archive php-fpm:$PROJECT_CONTAINER_DIR/$SERVER_NAME/$site/ $dest
 	mv "$dest/$site" "$dest/data"
 
