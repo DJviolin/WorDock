@@ -153,8 +153,9 @@ backup_fn() {
 	dest_sql="$dest/sql"
 	mkdir -p $dest_data $dest_sql
 
+	echo "dest_data: $dest/$site"
 	docker compose cp --archive php-fpm:$PROJECT_CONTAINER_DIR/$SERVER_NAME/$site/ $dest
-	# mv $dest/$site $dest/data
+	#mv $dest/$site "$dest/data"
 
 	# db="${site}_db"
 	# docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
