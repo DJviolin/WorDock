@@ -45,7 +45,7 @@ $ ./bin/compose.sh bootstrap -s app1 -p secret
 # Verify everything running correctly
 https://docker.test/phpinfo.php
 
-# Use an SFTP client (like FileZilla) to access the files (password: examplepass)
+# Use an SFTP client (like FileZilla) to copy the files (password: examplepass)
 sftp -P 2222 www-data@docker.test
 
 # Open your app after you copied the files
