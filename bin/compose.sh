@@ -212,14 +212,10 @@ restore_fn() {
 	docker compose cp $dest/data/ php-fpm:/tmp/
 	docker compose cp $dir_sql mariadb:/tmp/
 
-	# && mv $PROJECT_CONTAINER_DIR/$site/htaccess $PROJECT_CONTAINER_DIR/$site/.htaccess \
-		# && mv /tmp/data/* $PROJECT_CONTAINER_DIR/$site \
-		# && chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
-		# && rm -rf /tmp/data \
 	docker compose exec php-fpm sh -c " \
 		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
-		&& mv /tmp/data/ $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
+		&& mv /tmp/data $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& rm -rf /tmp/data \
 	"
