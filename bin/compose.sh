@@ -209,13 +209,12 @@ restore_fn() {
 	mkdir -p $dest
 	tar -xf $archive -C $dest
 
+	# https://superuser.com/questions/61611/how-to-copy-with-cp-to-include-hidden-files-and-hidden-directories-and-their-con
 	docker compose cp $dest/data/ php-fpm:/tmp/
-	docker compose cp $dir_sql mariadb:/tmp/
-
 	docker compose exec php-fpm sh -c " \
 		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
-		&& cp /tmp/data/. $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
+		&& cp -RT /tmp/data $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& rm -rf /tmp/data \
 	"
@@ -229,7 +228,7 @@ restore_fn() {
 	# 	GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
 	# 	ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
 	# ' -v"
-
+	# docker compose cp $dir_sql mariadb:/tmp/
 	# docker compose exec mariadb sh -c "set -e \
 	# 	&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
 	# 	&& rm /tmp/$db.sql \
