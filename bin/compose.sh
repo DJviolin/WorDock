@@ -161,7 +161,8 @@ backup_fn() {
 	docker compose cp php-fpm:$dir/$site/ $dir_data
 	# Also copy dotfiles
 	# mv $dir_data/$site/* $dir_data
-	rsync --remove-source-files $dir_data/$site/ $dir_data/
+	echo "Running rsync"
+	rsync -avzP $dir_data/$site/ $dir_data
 	#rm -r $dir_data/$site
 
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
