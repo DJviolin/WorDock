@@ -108,7 +108,7 @@ bootstrap_fn() {
 		&& mkdir -p $dir/$site \
 		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $dir/index.html \
-		&& chown -R $USER_NAME:$USER_NAME $dir $dir/$site \
+		&& chown -R $USER_NAME:$USER_NAME $dir \
 	"
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
 		CREATE DATABASE IF NOT EXISTS \`$db\` COLLATE \"$COLLATION\"; \
