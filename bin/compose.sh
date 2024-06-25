@@ -154,16 +154,11 @@ backup_fn() {
 	db="${site}_db"
 	mkdir -p $dir_data $dir_sql
 
-	# Backup .htaccess file
-	# docker compose exec php-fpm sh -c " \
-	# 	cp $dir/$site/.htaccess $dir/$site/htaccess \
-	# "
 	docker compose cp php-fpm:$dir/$site/ $dir_data
-	# Also copy dotfiles
 	# mv $dir_data/$site/* $dir_data
-	echo "Running rsync"
-	rsync -azP --remove-source-files $dir_data/$site/ $dir_data
-	#rm -r $dir_data/$site
+	# Also copy dotfiles
+	rsync -azP $dir_data/$site/ $dir_data
+	rm -r $dir_data/$site
 
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
 		--lock-tables=false --single-transaction --quick \
