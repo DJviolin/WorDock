@@ -29,7 +29,7 @@ $ sudo apt update && sudo apt upgrade -y
 ## Usage
 
 ```sh
-# Copy `.env` file into it's place
+# Copy `.env` file into it's place and edit your settings
 $ cp .env.example .env
 
 # Start docker-compose
@@ -45,7 +45,7 @@ $ ./bin/compose.sh bootstrap -s app1 -p secret
 # Verify everything running correctly
 https://docker.test/phpinfo.php
 
-# Use an SFTP client (like FileZilla) to copy the files (password: examplepass)
+# Use an SFTP client (like FileZilla) to copy the files (default password: examplepass)
 sftp -P 2222 www-data@docker.test
 
 # Open your app after you copied the files
