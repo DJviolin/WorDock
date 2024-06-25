@@ -94,7 +94,7 @@ bootstrap_fn() {
     fi
 
 	echo "Bootstrapping site: $site"
-	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME/$site"
+	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME"
 	db="${site}_db"
 	user="${site}_user"
 
@@ -105,10 +105,10 @@ bootstrap_fn() {
 	# "
 	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
-		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME $dir \
-		&& echo \"<?php phpinfo(); ?>\" > $PROJECT_CONTAINER_DIR/$SERVER_NAME/phpinfo.php \
-		&& echo '<html><body><h1>It works!</h1></body></html>' > $PROJECT_CONTAINER_DIR/$SERVER_NAME/index.html \
-		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME $dir \
+		&& mkdir -p $dir/$site \
+		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
+		&& echo '<html><body><h1>It works!</h1></body></html>' > $dir/index.html \
+		&& chown -R $USER_NAME:$USER_NAME $dir $dir/$site \
 	"
 	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
 		CREATE DATABASE IF NOT EXISTS \`$db\` COLLATE \"$COLLATION\"; \
