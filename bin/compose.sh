@@ -159,8 +159,8 @@ backup_fn() {
 		cp $dir/$site/.htaccess $dir/$site/htaccess \
 	"
 	docker compose cp php-fpm:$dir/$site/ $dir_data
-	mv $dir_data/$site/* $dir_data
-	rm -r $dir_data/$site
+	mv -f $dir_data/$site/{.,}* $dir_data # Also copy dotfiles
+	#rm -r $dir_data/$site
 
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
 		--lock-tables=false --single-transaction --quick \
