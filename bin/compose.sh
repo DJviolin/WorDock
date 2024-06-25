@@ -154,7 +154,7 @@ backup_fn() {
 	mkdir -p $dir_sql
 
 	docker compose cp --archive php-fpm:$dir/$site/ $dest
-	mv $dest/$site "$dest/data"
+	mv $dest/$site $dest/data
 
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
 		--lock-tables=false --single-transaction --quick \
