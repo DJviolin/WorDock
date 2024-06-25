@@ -38,23 +38,28 @@ down_fn() {
 }
 
 prune_fn() {
-	echo "Prune everything"
-	echo "Remove all containers"
-		docker container stop $(docker container ls --all --quiet) 2>/dev/null || true
-		docker container prune --force
-	echo "Remove all unused networks"
-		docker network prune --force
-	echo "Remove unused images"
-		docker image prune --all --force
+	# echo "Prune everything"
+	# echo "Remove all containers"
+	# 	docker container stop $(docker container ls --all --quiet) 2>/dev/null || true
+	# 	docker container prune --force
+	# echo "Remove all unused networks"
+	# 	docker network prune --force
+	# echo "Remove unused images"
+	# 	docker image prune --all --force
+	echo "Removes stopped service containers"
+	docker compose \
+		--env-file $ABS_PATH/.env \
+		--file $ABS_PATH/compose.yaml \
+		rm
 }
 
-cleanup_fn() {
-	echo "Cleanup Docker leftovers"
-	echo "Remove all unused data"
-		docker system prune --all --force
-	echo "Remove build cache"
-		docker builder prune --all --force
-}
+# cleanup_fn() {
+# 	echo "Cleanup Docker leftovers"
+# 	echo "Remove all unused data"
+# 		docker system prune --all --force
+# 	echo "Remove build cache"
+# 		docker builder prune --all --force
+# }
 
 bootstrap_fn() {
 	# A POSIX variable
@@ -259,7 +264,7 @@ case "$1" in
 	prune)
 		down_fn
 		prune_fn
-		cleanup_fn
+		# cleanup_fn
 		;;
 	bootstrap)
 		shift # Remove the first argument `bootstrap` from the argument list
