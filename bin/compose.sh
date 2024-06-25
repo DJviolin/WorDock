@@ -220,7 +220,7 @@ restore_fn() {
 		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mv /tmp/data/ $PROJECT_CONTAINER_DIR/$site \
-		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
+		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& rm -rf /tmp/data \
 	"
 
