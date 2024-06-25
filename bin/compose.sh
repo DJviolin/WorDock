@@ -210,31 +210,31 @@ restore_fn() {
 	tar -xf $archive -C $dest
 
 	docker compose cp $dir_data/ php-fpm:/tmp/
-	docker compose exec php-fpm sh -c "set -e \
-		&& rm -rf $PROJECT_CONTAINER_DIR/$site \
-		&& mkdir -p $PROJECT_CONTAINER_DIR/$site \
-		&& mv /tmp/data/* $PROJECT_CONTAINER_DIR/$site \
-		&& mv $PROJECT_CONTAINER_DIR/$site/htaccess $PROJECT_CONTAINER_DIR/$site/.htaccess \
-		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
-		&& rm -rf /tmp/data \
+	# && mv $PROJECT_CONTAINER_DIR/$site/htaccess $PROJECT_CONTAINER_DIR/$site/.htaccess \
+		# && mv /tmp/data/* $PROJECT_CONTAINER_DIR/$site \
+		# && chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$site \
+		# && rm -rf /tmp/data \
+	docker compose exec php-fpm sh -c " \
+		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
+		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 	"
 
-	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
-		DROP DATABASE IF EXISTS \`$db\`; \
-		DROP USER IF EXISTS \"$user\"@\"%\"; \
-		\
-		CREATE DATABASE \`$db\` COLLATE \"$COLLATION\"; \
-		CREATE USER \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
-		GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
-		ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
-	' -v"
-	docker compose cp $dir_sql mariadb:/tmp/
-	docker compose exec mariadb sh -c "set -e \
-		&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
-		&& rm /tmp/$db.sql \
-	"
+	# docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
+	# 	DROP DATABASE IF EXISTS \`$db\`; \
+	# 	DROP USER IF EXISTS \"$user\"@\"%\"; \
+	# 	\
+	# 	CREATE DATABASE \`$db\` COLLATE \"$COLLATION\"; \
+	# 	CREATE USER \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
+	# 	GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
+	# 	ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
+	# ' -v"
+	# docker compose cp $dir_sql mariadb:/tmp/
+	# docker compose exec mariadb sh -c "set -e \
+	# 	&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
+	# 	&& rm /tmp/$db.sql \
+	# "
 
-	rm -rf $dest
+	# rm -rf $dest
 }
 
 case "$1" in
