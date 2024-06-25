@@ -219,22 +219,22 @@ restore_fn() {
 		&& rm -rf /tmp/data \
 	"
 
-	# docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
-	# 	DROP DATABASE IF EXISTS \`$db\`; \
-	# 	DROP USER IF EXISTS \"$user\"@\"%\"; \
-	# 	\
-	# 	CREATE DATABASE \`$db\` COLLATE \"$COLLATION\"; \
-	# 	CREATE USER \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
-	# 	GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
-	# 	ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
-	# ' -v"
-	# docker compose cp $dir_sql mariadb:/tmp/
-	# docker compose exec mariadb sh -c "set -e \
-	# 	&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
-	# 	&& rm /tmp/$db.sql \
-	# "
+	docker compose exec mariadb sh -c "mariadb -uroot -p$MYSQL_ROOT_PASSWORD -e' \
+		DROP DATABASE IF EXISTS \`$db\`; \
+		DROP USER IF EXISTS \"$user\"@\"%\"; \
+		\
+		CREATE DATABASE \`$db\` COLLATE \"$COLLATION\"; \
+		CREATE USER \"$user\"@\"%\" IDENTIFIED BY \"$pass\"; \
+		GRANT ALL PRIVILEGES ON \`$db\`.* TO \"$user\"@\"%\"; \
+		ALTER DATABASE \`$db\` COLLATE \"$COLLATION\"; \
+	' -v"
+	docker compose cp $dir_sql mariadb:/tmp/
+	docker compose exec mariadb sh -c "set -e \
+		&& mariadb -uroot -p$MYSQL_ROOT_PASSWORD -D$db < /tmp/$db.sql \
+		&& rm /tmp/$db.sql \
+	"
 
-	# rm -rf $dest
+	rm -rf $dest
 }
 
 case "$1" in
