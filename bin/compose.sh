@@ -204,7 +204,6 @@ restore_fn() {
 	dest="$PROJECT_HOST_DIR/$file"
 	db="${site}_db"
 	user="${site}_user"
-	# dir_data="$dest/data"
 	dir_sql="$dest/sql/$db.sql"
 	mkdir -p $dest
 	tar -xf $archive -C $dest
