@@ -131,14 +131,14 @@ backup_fn() {
 				site=$OPTARG
 				;;
 			d)
-				dir_tar=$OPTARG
+				dir=$OPTARG
 				;;
 		esac
 	done
 	shift $((OPTIND-1))
 	[ "${1:-}" = "--" ] && shift
 
-	if [ -z "$site" ] || [ -z "$dir_tar" ]; then
+	if [ -z "$site" ] || [ -z "$dir" ]; then
         echo "Error: Both -s (site name) and -d (directory) are required."
         echo "Please refer to the help page for usage."
         usage
@@ -146,21 +146,22 @@ backup_fn() {
     fi
 
 	echo "Backing up site: $site"
-	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME"
+	# dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME"
 	archive="${site}_$TIMESTAMP"
 	dest="$PROJECT_HOST_DIR/$archive"
+	dest_data="$dest/data"
+	dest_sql="$dest/sql"
+	mkdir -p $dest_data $dest_sql
 
-	docker compose cp --archive php-fpm:$dir/$site/ $dest
-	mv $dest/$site $dest/data
+	docker compose cp --archive php-fpm:$PROJECT_CONTAINER_DIR/$SERVER_NAME/$site/ $dest
+	# mv $dest/$site $dest/data
 
-	dir_sql="$dest/sql"
-	db="${site}_db"
-	mkdir -p $dir_sql
-	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
-		--lock-tables=false --single-transaction --quick \
-		$db" > $dir_sql/$db.sql
+	# db="${site}_db"
+	# docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
+	# 	--lock-tables=false --single-transaction --quick \
+	# 	$db" > $dir_sql/$db.sql
 
-	(cd $dest && tar -czf $dir_tar/backup_${archive}.tar.gz data sql)
+	# (cd $dest && tar -czf $dir_tar/backup_${archive}.tar.gz data sql)
 	# rm -r $dest
 }
 
