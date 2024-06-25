@@ -166,8 +166,8 @@ backup_fn() {
 		--lock-tables=false --single-transaction --quick \
 		$db" > $dir_sql/$db.sql
 
-	(cd $dest && tar -czf $dir/backup_${archive}.tar.gz data sql)
-	rm -r $dest
+	# (cd $dest && tar -czf $dir/backup_${archive}.tar.gz data sql)
+	# rm -r $dest
 }
 
 restore_fn() {
