@@ -99,8 +99,8 @@ bootstrap_fn() {
 	user="${site}_user"
 
 	docker compose exec php-fpm sh -c " \
-		mkdir -p $dir/$site \
-		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
+		mkdir -p \"$dir/$site\" \
+		&& echo '<?php phpinfo(); ?>' > $dir/phpinfo.php \
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $dir/index.html \
 		&& chown -R $USER_NAME:$USER_NAME $dir \
 	"
