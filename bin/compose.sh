@@ -215,7 +215,7 @@ restore_fn() {
 	docker compose exec php-fpm sh -c " \
 		rm -rf $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& mkdir -p $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
-		&& cp -R /tmp/data/. $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
+		&& cp /tmp/data/. $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& chown -R $USER_NAME:$USER_NAME $PROJECT_CONTAINER_DIR/$SERVER_NAME/$site \
 		&& rm -rf /tmp/data \
 	"
