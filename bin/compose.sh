@@ -158,7 +158,7 @@ backup_fn() {
 
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
 		--lock-tables=false --single-transaction --quick \
-		$db" > $dir_sql/$db.sql
+		$db" > $dest_sql/$db.sql
 
 	# (cd $dest && tar -czf $dir_tar/backup_${archive}.tar.gz data sql)
 	# rm -r $dest
