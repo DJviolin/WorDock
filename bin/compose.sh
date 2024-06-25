@@ -131,14 +131,14 @@ backup_fn() {
 				site=$OPTARG
 				;;
 			d)
-				dir=$OPTARG
+				dir_tar=$OPTARG
 				;;
 		esac
 	done
 	shift $((OPTIND-1))
 	[ "${1:-}" = "--" ] && shift
 
-	if [ -z "$site" ] || [ -z "$dir" ]; then
+	if [ -z "$site" ] || [ -z "$dir_tar" ]; then
         echo "Error: Both -s (site name) and -d (directory) are required."
         echo "Please refer to the help page for usage."
         usage
@@ -160,7 +160,7 @@ backup_fn() {
 		--lock-tables=false --single-transaction --quick \
 		$db" > $dir_sql/$db.sql
 
-	(cd $dest && tar -czf $PROJECT_HOST_DIR/backup_${archive}.tar.gz data sql)
+	(cd $dest && tar -czf $dir_tar/backup_${archive}.tar.gz data sql)
 	# rm -r $dest
 }
 
