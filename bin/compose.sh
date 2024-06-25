@@ -98,12 +98,6 @@ bootstrap_fn() {
 	db="${site}_db"
 	user="${site}_user"
 
-	# docker compose exec php-fpm sh -c "set -e \
-	# 	&& mkdir -p $dir \
-	# 	&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
-	# 	&& chown -R $USER_NAME:$USER_NAME $dir \
-	# "
-	# Catch-All domain to Apache
 	docker compose exec php-fpm sh -c "set -e \
 		&& mkdir -p $dir/$site \
 		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
