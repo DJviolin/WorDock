@@ -94,7 +94,7 @@ bootstrap_fn() {
     fi
 
 	echo "Bootstrapping site: $site"
-	dir="$PROJECT_CONTAINER_DIR/$site"
+	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME/$site"
 	db="${site}_db"
 	user="${site}_user"
 
