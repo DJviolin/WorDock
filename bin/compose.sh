@@ -146,6 +146,7 @@ backup_fn() {
     fi
 
 	echo "Backing up site: $site"
+	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME"
 	archive="${site}_$TIMESTAMP"
 	dest="$PROJECT_HOST_DIR/$archive"
 	dir_data="$dest/data"
@@ -155,9 +156,9 @@ backup_fn() {
 
 	# Backup .htaccess file
 	docker compose exec php-fpm sh -c " \
-		cp $PROJECT_CONTAINER_DIR/$site/.htaccess $PROJECT_CONTAINER_DIR/$site/htaccess \
+		cp $dir/$site/.htaccess $dir/$site/htaccess \
 	"
-	docker compose cp php-fpm:$PROJECT_CONTAINER_DIR/$site/ $dir_data
+	docker compose cp php-fpm:$dir/$site/ $dir_data
 	mv $dir_data/$site/* $dir_data
 	rm -r $dir_data/$site
 
