@@ -160,7 +160,7 @@ backup_fn() {
 		$db" > $dest_sql/$db.sql
 
 	(cd $dest && tar -czf $dir/backup_${archive}.tar.gz data sql)
-	# rm -r $dest
+	rm -r $dest
 }
 
 restore_fn() {
