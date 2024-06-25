@@ -51,10 +51,10 @@ sftp -P 2222 www-data@docker.test
 # Open your app after you copied the files
 https://docker.test/app1
 
-# Backup webserver files & database
+# Backup files & database
 $ ./bin/compose.sh backup -s app1 -d /mnt/c/temp
 
-# Restore webserver files & database
+# Restore files & database
 $ ./bin/compose.sh restore -s app1 -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
 
 # Stop the service
