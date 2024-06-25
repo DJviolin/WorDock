@@ -149,18 +149,18 @@ backup_fn() {
 	dir="$PROJECT_CONTAINER_DIR/$SERVER_NAME"
 	archive="${site}_$TIMESTAMP"
 	dest="$PROJECT_HOST_DIR/$archive"
-	dir_sql="$dest/sql"
-	db="${site}_db"
-	mkdir -p $dir_sql
 
 	docker compose cp --archive php-fpm:$dir/$site/ $dest
 	mv $dest/$site $dest/data
 
+	dir_sql="$dest/sql"
+	db="${site}_db"
+	mkdir -p $dir_sql
 	docker compose exec mariadb sh -c "mariadb-dump -uroot -p$MYSQL_ROOT_PASSWORD \
 		--lock-tables=false --single-transaction --quick \
 		$db" > $dir_sql/$db.sql
 
-	# (cd $dest && tar -czf $dir/backup_${archive}.tar.gz data sql)
+	(cd $dest && tar -czf $PROJECT_HOST_DIR/backup_${archive}.tar.gz data sql)
 	# rm -r $dest
 }
 
