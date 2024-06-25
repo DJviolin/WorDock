@@ -98,7 +98,7 @@ bootstrap_fn() {
 	db="${site}_db"
 	user="${site}_user"
 
-	docker compose exec php-fpm sh -c "set -e \
+	docker compose exec php-fpm sh -c " \
 		&& mkdir -p $dir/$site \
 		&& echo \"<?php phpinfo(); ?>\" > $dir/phpinfo.php \
 		&& echo '<html><body><h1>It works!</h1></body></html>' > $dir/index.html \
