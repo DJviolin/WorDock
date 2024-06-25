@@ -52,10 +52,10 @@ sftp -P 2222 www-data@docker.test
 https://docker.test/app1
 
 # Backup webserver files & database
-$ ./bin/compose.sh backup -s docker.test -d /mnt/c/temp
+$ ./bin/compose.sh backup -s app1 -d /mnt/c/temp
 
 # Restore webserver files & database
-$ ./bin/compose.sh restore -s docker.test -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
+$ ./bin/compose.sh restore -s app1 -p secret -f /mnt/c/temp/<FILE_NAME>.tar.gz
 
 # Stop the service
 $ ./bin/compose.sh down
