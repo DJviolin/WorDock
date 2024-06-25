@@ -154,8 +154,8 @@ backup_fn() {
 	mkdir -p $dir_data $dir_sql
 
 	# Backup .htaccess file
-	docker compose exec php-fpm sh -c "set -e \
-		&& cp $PROJECT_CONTAINER_DIR/$site/.htaccess $PROJECT_CONTAINER_DIR/$site/htaccess \
+	docker compose exec php-fpm sh -c " \
+		cp $PROJECT_CONTAINER_DIR/$site/.htaccess $PROJECT_CONTAINER_DIR/$site/htaccess \
 	"
 	docker compose cp php-fpm:$PROJECT_CONTAINER_DIR/$site/ $dir_data
 	mv $dir_data/$site/* $dir_data
