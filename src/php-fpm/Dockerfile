@@ -7,6 +7,8 @@ FROM php:${VERSION_PHP}
 
 LABEL maintainer="István Lantos <lantosistvan89@gmail.com>"
 
+ARG VERSION_PHP
+
 RUN set -e \
 	# Use the default production configuration
 	&& mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
