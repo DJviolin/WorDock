@@ -23,7 +23,6 @@ volumes:
   phpmyadmin:
   redis:
   socket_php:
-  # socket_redis:
 
 services:
 
@@ -87,7 +86,6 @@ services:
     restart: ${RESTART_POLICY}
     volumes:
       - redis:/data
-      # - socket_redis:${REDIS_SOCK}
     environment:
       - TZ=${TZ}
     ports:
