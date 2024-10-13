@@ -65,7 +65,7 @@ RUN set -e \
 RUN set -e \
 	&& curl -L -o /tmp/ioncube_loaders_lin_x86-64.tar.gz https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
 	&& tar zxpf /tmp/ioncube_loaders_lin_x86-64.tar.gz -C /tmp \
-	&& mv /tmp/ioncube/ioncube_loader_lin_${VERSION_PHP}.so $(php -r "echo ini_get('extension_dir');")/ioncube_loader.so \
+	&& mv /tmp/ioncube/ioncube_loader_lin_${VERSION_PHP%%.*}.so $(php -r "echo ini_get('extension_dir');")/ioncube_loader.so \
 	&& printf "zend_extension=ioncube_loader.so\n" > /usr/local/etc/php/conf.d/0ioncube.ini \
 	&& rm -rf /tmp/* \
     && php -m | grep -oiE '^ionCube Loader$'
