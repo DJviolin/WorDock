@@ -23,6 +23,7 @@ volumes:
   phpmyadmin:
   redis:
   socket_php:
+  socket_redis:
 
 services:
 
@@ -73,6 +74,24 @@ services:
     networks:
       - backend
       - frontend
+
+### Redis ######################################################################
+# https://hub.docker.com/_/redis
+# https://runcloud.io/blog/redis-page-cache
+# https://github.com/openresty/srcache-nginx-module#installation
+  redis:
+    build:
+      context: ./src/redis
+      args:
+        VERSION_REDIS: ${VERSION_REDIS}
+    restart: ${RESTART_POLICY}
+    volumes:
+      - redis:/data
+      - socket_redis:${REDIS_SOCK}
+    environment:
+      - TZ=${TZ}
+    networks:
+      - backend
 
 ### PHP-FPM ####################################################################
   php-fpm:
