@@ -21,6 +21,7 @@ volumes:
   data:
   mariadb:
   phpmyadmin:
+  redis:
   socket_php:
 
 services:
