@@ -90,6 +90,8 @@ services:
       - socket_redis:${REDIS_SOCK}
     environment:
       - TZ=${TZ}
+    ports:
+      - 6379:6379
     networks:
       - backend
 
@@ -106,6 +108,7 @@ services:
       - ./src/php-fpm/wordpress.ini:/usr/local/etc/php/conf.d/wordpress.ini:ro
     depends_on:
       - mariadb
+      - redis
     networks:
       - backend
     extra_hosts:
